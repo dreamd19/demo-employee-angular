@@ -1,10 +1,10 @@
-﻿
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AbstractControlOptions, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { EmployeeService } from '../employee.service';
 
+import { UserService, AlertService } from '@app/_services';
+import { MustMatch } from '@app/_helpers';
 
 @Component({ templateUrl: 'add-edit.component.html' })
 export class AddEditComponent implements OnInit {
@@ -18,7 +18,8 @@ export class AddEditComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private employeeService: EmployeeService
+        private userService: UserService,
+        private alertService: AlertService
     ) {}
 
     ngOnInit() {
@@ -43,7 +44,7 @@ export class AddEditComponent implements OnInit {
         }, formOptions);
 
         if (!this.isAddMode) {
-            this.employeeService.getById(this.id)
+            this.userService.getById(this.id)
                 .pipe(first())
                 .subscribe(x => this.form.patchValue(x));
         }
@@ -55,6 +56,10 @@ export class AddEditComponent implements OnInit {
     onSubmit() {
         this.submitted = true;
 
+        // reset alerts on submit
+        this.alertService.clear();
+
+        // stop here if form is invalid
         if (this.form.invalid) {
             return;
         }
@@ -68,24 +73,22 @@ export class AddEditComponent implements OnInit {
     }
 
     private createUser() {
-        this.employeeService.create(this.form.value)
+        this.userService.create(this.form.value)
             .pipe(first())
             .subscribe(() => {
+                this.alertService.success('User added', { keepAfterRouteChange: true });
                 this.router.navigate(['../'], { relativeTo: this.route });
             })
             .add(() => this.loading = false);
     }
 
     private updateUser() {
-        this.employeeService.update(this.id, this.form.value)
+        this.userService.update(this.id, this.form.value)
             .pipe(first())
             .subscribe(() => {
+                this.alertService.success('User updated', { keepAfterRouteChange: true });
                 this.router.navigate(['../../'], { relativeTo: this.route });
             })
             .add(() => this.loading = false);
     }
-}
-
-function MustMatch(arg0: string, arg1: string): import("@angular/forms").ValidatorFn | import("@angular/forms").ValidatorFn[] | null | undefined {
-    throw new Error('Function not implemented.');
 }
