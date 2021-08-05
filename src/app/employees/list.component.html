@@ -1,1 +1,31 @@
 <a routerLink="add" class="btn btn-sm btn-success mb-2">Add Employee</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Birthday</th>
+            <th>Email</th>
+            <th>Operation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users">
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td>{{user.birthday}}</td>
+            <td>{{user.email}}</td>
+            <td style="white-space: nowrap">
+                <a class="btn btn-sm btn-primary mr-1">Edit</a>
+                <button  class="btn btn-sm btn-danger btn-delete-user">
+                    <span >Delete</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="!users">
+            <td colspan="4" class="text-center">
+                <span class="spinner-border spinner-border-lg align-center"></span>
+            </td>
+        </tr>
+    </tbody>
+</table>

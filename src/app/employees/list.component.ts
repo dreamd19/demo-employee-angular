@@ -5,7 +5,7 @@ import { EmployeeService } from '../employee.service';
 
 @Component({ templateUrl: 'list.component.html' })
 export class ListComponent implements OnInit {
-  users: any={};
+  users: any = [];
 
     constructor(private employeeService: EmployeeService) {}
 
